@@ -22,12 +22,20 @@ const service = tsyringe_1.container.resolve(userService_1.UserService);
 exports.Signup = (0, core_1.default)((event) => {
     return service.CreateUser(event);
 }).use((0, http_json_body_parser_1.default)());
-const Login = (event) => __awaiter(void 0, void 0, void 0, function* () {
+exports.Login = (0, core_1.default)((event) => {
     return service.LoginUser(event);
-});
-exports.Login = Login;
+}).use((0, http_json_body_parser_1.default)());
 const Verify = (event) => __awaiter(void 0, void 0, void 0, function* () {
-    return service.VerifyUser(event);
+    const httpMethod = event.requestContext.http.method.toLowerCase();
+    if (httpMethod === "post") {
+        return service.VerifyUser(event);
+    }
+    else if (httpMethod === "get") {
+        return service.GetVerificationToken(event);
+    }
+    else {
+        return (0, response_1.ErrorResponse)(404, "requested method is not supported!");
+    }
 });
 exports.Verify = Verify;
 const Profile = (event) => __awaiter(void 0, void 0, void 0, function* () {
